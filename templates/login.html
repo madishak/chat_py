@@ -1,0 +1,36 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<!--    <link rel="stylesheet" href="./style.css">-->
+    <title>Вход</title>
+    <style>
+.form__button-link {
+  margin-top: 150px;
+  text-decoration: none;
+}
+    </style>
+</head>
+<body>
+<h1>Hello, user</h1>
+<form action="/get_user" method="post">
+    <input type="text" placeholder="Логин" name="log__name">
+    <input type="password" placeholder="Пароль" name="password">
+    <button type="submit" class="form__button">Войти</button>
+</form>
+
+
+
+<h3>Ваши данные</h3>
+{% for log in login|reverse %}
+<div><b>{{ log.name }}</b>&nbsp;
+    {{ log.password }}
+
+</div>
+{% endfor %}
+
+
+
+</body>
+</html>

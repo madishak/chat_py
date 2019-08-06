@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Main page</title>
+</head>
+<body>
+<h2>Messages</h2>
+<form method="post" action="/add_message">
+<!--    <input type="text" name="nick" placeholder="Логин">-->
+    <textarea name="message" placeholder="Сообщение"></textarea>
+    <button type="submit">Отправить</button>
+</form>
+
+<h3>Ваши сообщения</h3>
+{% for log in login|reverse %}
+<div><b>{{ log.name }}</b>&nbsp;
+    {% for mes in messages|reverse %}
+    {{ mes.text }}
+{% endfor %}
+</div>
+{% endfor %}
+
+<div><b></b>&nbsp;
+
+</div>
+
+
+</body>
+</html>
