@@ -13,14 +13,16 @@
 </form>
 
 <h3>Ваши сообщения</h3>
-{% for log in login|reverse %}
-<div><b>{{ log.name }}</b>&nbsp;
-    {% for mes in messages|reverse %}
-    {{ mes.text }}
-{% endfor %}
+{% for log in result|reverse %}
+<div><b>{{ log.text }}</b>&nbsp;
+    {{ log.name }}
+    {{ log}}
+ {{ log.user_id }}
 </div>
 {% endfor %}
-
+ {% for n in result|reverse %}
+    {{ n.user_id }}
+{% endfor %}
 <div><b></b>&nbsp;
 
 </div>
