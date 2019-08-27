@@ -42,29 +42,16 @@ class Message(db.Model):
     def __repr__(self):
         return '<Message %r>' % self.text
 
-#
-# class MessageNames():
-#     # id = db.Column(db.Integer, primary_key=True)
-#     # name = db.Column(db.String(1024), nullable=False)
-#     # text = db.Column(db.String(32), nullable=False)
-#     def __init__(self, name, text):
-#         self.name = [
-#             Login(name=n.strip()) for n in name.split(',')
-#         ]
-#         self.text = [
-#             Message(text=t.strip()) for t in text.split(',')
-#         ]
-#         #super().__init__(name, text)
+
 
 
 db.create_all()
 
+current_user = {'user_id': 0}
 
 @app.route('/', methods=['GET'])
 def hello_world():
     return render_template('index.html')
-
-
 
 
 @app.route('/login', methods=['GET'])
@@ -80,8 +67,8 @@ def get_user():
 
     db.session.add(user)
     db.session.commit()
-
-    return redirect(url_for('main', user_id=user.id))
+    current_user['user_id'] = user.id
+    return redirect(url_for('main', user_id=current_user['user_id']))
 
 # @app.route('/get_user', methods=['POST'])
 # def get_user_id():
@@ -105,13 +92,13 @@ def get_name(id):
 def add_message():
     # username = request.args.get('user_id')
     # f = get_name()
-    # print(f)
-    # print("Madina!!!!!!!!!!!!!!!!!!")
+    print(current_user['user_id'])
+    print("Madina!!!!!!!!!!!!!!!!!!")
     name = Login.name
     # password = request.form['password']
     text = request.form['message']
     # res=db.session.query(Login.name, Message.text).filter(Login.id == Message.user_id).all()
-    users = Login.query.get(37)
+    users = Login.query.get(current_user['user_id'])
     message = Message(text=text, user=users)
     # message = 0
     # for i in res[id]:
