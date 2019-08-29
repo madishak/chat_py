@@ -1,17 +1,13 @@
-
 from flask import Flask, render_template, redirect, url_for, request
 from flask_sqlalchemy import SQLAlchemy
 from plyer import notification
-from sqlalchemy import select
-# from flask import models
 import os
+
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 app = Flask(__name__)
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////chat.db'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'chat.db')
-# app.coSQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'messages.db')
 db = SQLAlchemy(app)
 
 
@@ -31,6 +27,7 @@ class Login(db.Model):
 
 class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    receiver = db.Column(db.String(1024), nullable=False)
     text = db.Column(db.String(32), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('login.id'))
 
@@ -49,6 +46,7 @@ db.create_all()
 
 current_user = {'user_id': 0}
 
+
 @app.route('/', methods=['GET'])
 def hello_world():
     return render_template('index.html')
@@ -64,48 +62,34 @@ def get_user():
     name = request.form['log__name']
     password = request.form['password']
     user = Login(name=name, password=password)
-
     db.session.add(user)
     db.session.commit()
     current_user['user_id'] = user.id
     return redirect(url_for('main', user_id=current_user['user_id']))
 
-# @app.route('/get_user', methods=['POST'])
-# def get_user_id():
-#     return add_message(Login.id)
 
-# messages = MessageNames()
-# db.session.query(Login, Message).filter(Login.id == Message.id).all()
 @app.route('/main', methods=['GET'])
 def main():
-    return render_template('main.html', result=db.session.query(Login.name, Message.text).filter(Login.id == Message.user_id).all())
+    return render_template('main.html', result=db.session.query(Login.name, Message.receiver, Message.text).filter(Login.id == Message.user_id).all(), login=Login.query.all())
 
 
-@app.route('/main/<id>', methods=['GET'])
-def get_name(id):
-    username = request.args.get('user_id')
-    # add_message(username)
-    return id
+@app.route('/login', methods=['GET'])
+def get_names():
+    return render_template('main.html', login=Login.query.all())
 
 
-@app.route('/add_message', methods=['GET', 'POST'])
+@app.route('/add_message', methods=['POST'])
 def add_message():
-    # username = request.args.get('user_id')
-    # f = get_name()
     print(current_user['user_id'])
     print("Madina!!!!!!!!!!!!!!!!!!")
-    name = Login.name
-    # password = request.form['password']
+    # name = Login.name
+
+    receiver = request.form.get('receiver')
     text = request.form['message']
-    # res=db.session.query(Login.name, Message.text).filter(Login.id == Message.user_id).all()
+    print(receiver)
+
     users = Login.query.get(current_user['user_id'])
-    message = Message(text=text, user=users)
-    # message = 0
-    # for i in res[id]:
-    #     print(i)
-    #     message = Message(text=text, user=i)
-
-
+    message = Message(receiver=receiver, text=text, user=users)
 
     if len(text) == 0:
         notification.notify(
@@ -131,4 +115,3 @@ def add_message():
 if __name__ == '__main__':
     app.debug = True
     app.run(host = '127.0.0.1', port = 5000)
-
