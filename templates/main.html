@@ -6,23 +6,31 @@
 </head>
 <body>
 <h2>Messages</h2>
-<form method="post" action="/add_message">
+<form method="post" action="/add_message" id="messages">
 <!--    <input type="text" name="nick" placeholder="Логин">-->
+    <select form="messages" name="receiver">
+        {% for log in login|reverse %}
+        <option  value="{{log.name}}" SELECTED>{{log.name}}</option>
+        {% endfor %}
+    </select>
+
     <textarea name="message" placeholder="Сообщение"></textarea>
     <button type="submit">Отправить</button>
 </form>
 
 <h3>Ваши сообщения</h3>
 {% for log in result|reverse %}
-<div><b>{{ log.text }}</b>&nbsp;
-    {{ log.name }}
-    {{ log}}
- {{ log.user_id }}
+<div>
+    <b>{{ log.name }}</b>
+    <em>{{ log.text }}</em>&nbsp;
+    {{ log.date }}
+        {{ log}}
+
 </div>
 {% endfor %}
- {% for n in result|reverse %}
-    {{ n.user_id }}
-{% endfor %}
+<!-- {% for n in result|reverse %}-->
+<!--    {{ n.user_id }}-->
+<!--{% endfor %}-->
 <div><b></b>&nbsp;
 
 </div>
